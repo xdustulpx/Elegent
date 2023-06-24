@@ -31,7 +31,7 @@ void echangerLignesM (matrice *m , const int i , const int j ){
   T *ligne_j = m->mat + j * m->nbc;
 
   // 逐元素交换两行的值
-  for (int k = 0; k < m->nbc; k++) {
+  for (int k = 0; k < m->nbl; k++) {
     T temp = ligne_i[k];
     ligne_i[k] = ligne_j[k];
     ligne_j[k] = temp;
@@ -39,8 +39,8 @@ void echangerLignesM (matrice *m , const int i , const int j ){
 }
 // rôle : écrit la matrice m sur la sortie standard
 void ecrireMatrice (const matrice m){
-  for(int i=0;i<m.nbc;i++){
-    for(int j=0;i<m.nbl;j++){
+  for(int i=0;i<m.nbl;i++){
+    for(int j=0;i<m.nbc;j++){
       printf("%lf ",m.mat[i*m.nbc+j]);//逐元素打印出矩阵元素
     }
     printf("\n");//换行
@@ -50,17 +50,21 @@ void ecrireMatrice (const matrice m){
 void lireMatrice (matrice *m , const char *f){
   FILE *fd;
   int num=0;
+  int nbl,nbc=0;
   if((fd=fopen(f,"r"))==NULL){
   perror(f);
   exit(errno);
   }
+  fread(&nbl,sizeof(int),1,fd);//读取矩阵的行列
+  fread(&nbc,sizeof(int),1,fd);
   while(fread(&num,sizeof(T),1,fd)>0){
-    for(int i=0;i<m.nbc;i++){
-      for(int j=0;j<m.nbl;j++){
+    for(int i=0;i<m.nbl;i++){
+      for(int j=0;j<m.nbc;j++){
         m->mat[i*mat.nbc+j]=num;//在文件f中一个一个读取并遍历存入矩阵mat
       }
     }
   }
+  fclose(fd);
 }
 // rôle : renvoie le nombre de lignes de la matrice m
 int getNbLignes (const matrice m ){
